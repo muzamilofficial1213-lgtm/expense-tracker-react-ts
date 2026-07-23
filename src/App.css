@@ -324,3 +324,48 @@ body{
   }
 
 }
+
+/* ACTION BUTTONS */
+
+.action-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.edit-btn{
+  background:#ffc107;
+  color:black;
+
+  border:none;
+  padding:10px 15px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  font-weight:600;
+}
+
+.edit-btn:hover{
+  background:#e0a800;
+}
+
+.delete-btn{
+  background:#dc3545;
+  color:white;
+
+  border:none;
+
+  padding:10px 15px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  font-weight:600;
+}
+
+.delete-btn:hover{
+  background:#bb2d3b;
+}

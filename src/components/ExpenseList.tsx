@@ -3,17 +3,19 @@ import type { Expense } from "../types/Expense";
 interface Props {
   expenses: Expense[];
   onDeleteExpense: (id: number) => void;
+  onEditExpense: (expense: Expense) => void;
 }
 
 function ExpenseList({
   expenses,
   onDeleteExpense,
+  onEditExpense,
 }: Props) {
 
   if (expenses.length === 0) {
     return (
       <div className="empty-state">
-        No expenses found.
+        📂 No expenses found.
       </div>
     );
   }
@@ -64,6 +66,7 @@ function ExpenseList({
     <div className="expense-list">
 
       {expenses.map((expense) => (
+
         <div
           className="expense-item"
           key={expense.id}
@@ -85,7 +88,7 @@ function ExpenseList({
             </span>
 
             <p className="expense-date">
-              {expense.date}
+              📅 {expense.date}
             </p>
 
           </div>
@@ -97,18 +100,32 @@ function ExpenseList({
               {expense.amount.toLocaleString()}
             </h3>
 
-            <button
-              className="delete-btn"
-              onClick={() =>
-                onDeleteExpense(expense.id)
-              }
-            >
-              🗑 Delete
-            </button>
+            <div className="action-buttons">
+
+              <button
+                className="edit-btn"
+                onClick={() =>
+                  onEditExpense(expense)
+                }
+              >
+                ✏ Edit
+              </button>
+
+              <button
+                className="delete-btn"
+                onClick={() =>
+                  onDeleteExpense(expense.id)
+                }
+              >
+                🗑 Delete
+              </button>
+
+            </div>
 
           </div>
 
         </div>
+
       ))}
 
     </div>

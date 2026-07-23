@@ -16,7 +16,11 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [darkMode, setDarkMode] = useState(false);
 
-  // Load Data
+  // NEW
+  const [editingExpense, setEditingExpense] =
+    useState<Expense | null>(null);
+
+  // Load Expenses
   useEffect(() => {
     const savedExpenses = localStorage.getItem("expenses");
 
@@ -47,24 +51,50 @@ function App() {
     );
   }, [darkMode]);
 
+  // Add Expense
   const addExpense = (expense: Expense) => {
-    setExpenses([...expenses, expense]);
+    setExpenses((prev) => [...prev, expense]);
   };
 
+  // Delete Expense
   const deleteExpense = (id: number) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this expense?"
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this expense?"
+      )
+    ) {
+      return;
+    }
+
+    setExpenses((prev) =>
+      prev.filter((expense) => expense.id !== id)
     );
+  };
 
-    if (!confirmDelete) return;
+  // NEW - Start Editing
+  const editExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+  };
 
-    setExpenses(
-      expenses.filter(
-        (expense) => expense.id !== id
+  // NEW - Update Expense
+  const updateExpense = (updatedExpense: Expense) => {
+    setExpenses((prev) =>
+      prev.map((expense) =>
+        expense.id === updatedExpense.id
+          ? updatedExpense
+          : expense
       )
     );
+
+    setEditingExpense(null);
   };
 
+  // NEW - Cancel Edit
+  const cancelEdit = () => {
+    setEditingExpense(null);
+  };
+
+  // Filter
   const filteredExpenses = expenses.filter(
     (expense) =>
       (category === "" ||
@@ -74,6 +104,7 @@ function App() {
         .includes(searchTerm.toLowerCase())
   );
 
+  // Dashboard Stats
   const totalExpense = filteredExpenses.reduce(
     (sum, expense) => sum + expense.amount,
     0
@@ -83,7 +114,7 @@ function App() {
     filteredExpenses.length > 0
       ? Math.max(
           ...filteredExpenses.map(
-            (e) => e.amount
+            (expense) => expense.amount
           )
         )
       : 0;
@@ -94,13 +125,7 @@ function App() {
   );
 
   return (
-    <div
-      className={
-        darkMode
-          ? "app dark-mode"
-          : "app"
-      }
-    >
+    <div className={darkMode ? "app dark-mode" : "app"}>
       <div className="container">
 
         <Header
@@ -119,6 +144,9 @@ function App() {
 
         <ExpenseForm
           onAddExpense={addExpense}
+          editingExpense={editingExpense}
+          onUpdateExpense={updateExpense}
+          onCancelEdit={cancelEdit}
         />
 
         <ExpenseFilter
@@ -131,6 +159,7 @@ function App() {
         <ExpenseList
           expenses={filteredExpenses}
           onDeleteExpense={deleteExpense}
+          onEditExpense={editExpense}
         />
 
       </div>
